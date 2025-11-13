@@ -8,7 +8,7 @@ namespace sparkly_server.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/profile")]
     public class ProfileController : ControllerBase
     {
         private readonly ICurrentUser _currentUser;

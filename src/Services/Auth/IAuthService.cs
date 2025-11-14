@@ -9,7 +9,7 @@ namespace sparkly_server.Services.Auth
 
     public interface IAuthService
     {
-        Task<AuthResult> LoginAsync(string email, string password, CancellationToken ct = default);
+        Task<AuthResult?> LoginAsync(string identifier, string password, CancellationToken ct = default);
         Task<AuthResult> RefreshAsync(string refreshToken, CancellationToken ct = default);
         Task LogoutAsync(string refreshToken, CancellationToken ct = default);
     }

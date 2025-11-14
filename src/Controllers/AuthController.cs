@@ -32,7 +32,7 @@ namespace sparkly_server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken ct)
         {
-            var result = await _authService.LoginAsync(request.Email, request.Password, ct);
+            var result = await _authService.LoginAsync(request.Identifier, request.Password, ct);
             if (result is null)
             {
                 return Unauthorized(new { message = "Invalid credentials" });

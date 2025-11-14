@@ -24,7 +24,7 @@ namespace sparkly_server.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken ct)
         {
             // Add validation email and password??
-            await _userService.RegisterAsync(request.Email, request.Password, ct);
+            await _userService.RegisterAsync(userName: request.Username, email: request.Email, password: request.Password, ct: ct);
             return NoContent();
         }
 

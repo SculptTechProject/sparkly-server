@@ -29,7 +29,7 @@ namespace sparkly_server.Controllers
             if (!_currentUser.IsAuthenticated)
                 return Unauthorized();
 
-            return Ok(new { _currentUser.UserId, _currentUser.Email, _currentUser.Role });
+            return Ok(new { _currentUser.UserId, _currentUser.Email, _currentUser.UserName, _currentUser.Role });
         }
     }
 }

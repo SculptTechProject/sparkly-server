@@ -24,7 +24,7 @@ namespace sparkly_server.Services.Auth
             var accessToken  = _jwtProvider.GenerateAccessToken(user);
             var refreshToken = _jwtProvider.GenerateRefreshToken();
 
-            // TODO: save refresh token to db
+            // TODO: save refresh token to db (!BLOCKER!)
 
             var now = DateTime.UtcNow;
 

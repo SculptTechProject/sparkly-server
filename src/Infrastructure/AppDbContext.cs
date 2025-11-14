@@ -21,11 +21,14 @@ namespace sparkly_server.Infrastructure
                 cfg.ToTable("users");
 
                 cfg.HasKey(u => u.Id);
-
+                
                 cfg.Property(u => u.Email)
                     .IsRequired()
                     .HasMaxLength(256);
 
+                cfg.Property(u => u.UserName)
+                    .IsRequired();
+                
                 cfg.HasIndex(u => u.Email)
                     .IsUnique();
 

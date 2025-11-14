@@ -14,20 +14,27 @@ namespace sparkly_server.Services.UserServices
             _users = users;
         }
 
-        public async Task<User> RegisterAsync(string email, string password, CancellationToken ct = default)
+        public async Task<User> RegisterAsync(string userName, string email, string password, CancellationToken ct = default)
         {
-            var existing = await _users.GetByEmailAsync(email, ct);
-            if (existing is not null)
+            var userByEmail = await _users.GetByEmailAsync(email, ct);
+            var userByName = await _users.GetByEmailAsync(userName, ct);
+            
+            if (userByEmail is not null || userByName is not null)
             {
                 throw new InvalidOperationException("User with this email already exists.");
             }
 
+            if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(email))
+            {
+                throw new InvalidOperationException("Please provide valid name and email.");
+            }
+            
             if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
             {
                 throw new InvalidOperationException("Password too weak.");
             }
             
-            var user = new User(email);
+            var user = new User(userName:userName, email:email, role:"user");
             
             var hash = _passwordHasher.HashPassword(user, password);
             user.SetPasswordHash(hash);

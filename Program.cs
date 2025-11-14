@@ -19,8 +19,20 @@ public class Program
      
         
         var jwtKey = builder.Configuration["SPARKLY_JWT_KEY"]
-                     ?? Environment.GetEnvironmentVariable("SPARKLY_JWT_KEY")
-                     ?? throw new Exception("JWT key missing");
+                     ?? Environment.GetEnvironmentVariable("SPARKLY_JWT_KEY");
+
+        if (string.IsNullOrWhiteSpace(jwtKey))
+        {
+            if (builder.Environment.IsDevelopment())
+            {
+                jwtKey = "dev-only-jwt-key-change-me";
+            }
+            else
+            {
+                throw new Exception("JWT key missing");
+            }
+        }
+
 
         var jwtIssuer   = builder.Configuration["SPARKLY_JWT_ISSUER"]
                           ?? Environment.GetEnvironmentVariable("SPARKLY_JWT_ISSUER")
@@ -57,6 +69,18 @@ public class Program
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
         
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("FrontendDev", policy =>
+            {
+                policy
+                    .WithOrigins("http://localhost:4200") 
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
+        });
+        
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -86,6 +110,8 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+        
+        app.UseCors("FrontendDev");
 
         app.MapControllers();
 

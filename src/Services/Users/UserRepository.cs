@@ -15,7 +15,8 @@ namespace sparkly_server.Services.Users
 
         public Task<User?> GetByIdAsync(Guid id, CancellationToken ct = default)
             => _db.Users.FirstOrDefaultAsync(u => u.Id == id, ct);
-
+        public Task<User?> GetByUserNameAsync(string userName, CancellationToken ct = default)
+            => _db.Users.FirstOrDefaultAsync(u => u.UserName == userName, ct);
         public Task<User?> GetByEmailAsync(string email, CancellationToken ct = default)
             => _db.Users.FirstOrDefaultAsync(u => u.Email == email, ct);
 

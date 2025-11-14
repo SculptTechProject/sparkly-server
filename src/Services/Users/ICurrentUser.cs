@@ -4,6 +4,7 @@ namespace sparkly_server.Services.Users
     {
         Guid? UserId { get; }
         string? Email { get; }
+        string? UserName { get; }
         string? Role { get; }
         bool IsAuthenticated { get; }
         bool IsInRole(string role);

@@ -6,16 +6,18 @@ namespace sparkly_server.Domain
     {
         public Guid Id { get; private set; }
         public string Email { get; private set; } = default!;
+        public string UserName { get; set; } = default!;
         public string PasswordHash { get; private set; } = default!;
         public string Role { get; private set; } = "User";
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
         private User() { }
 
-        public User(string email, string role = "User")
+        public User(string userName, string email, string role = "User")
         {
             Id = Guid.NewGuid();
             Email = email;
+            UserName = userName;
             Role = role;
         }
 

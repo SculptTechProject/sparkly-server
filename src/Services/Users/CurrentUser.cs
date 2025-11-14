@@ -17,6 +17,7 @@ namespace sparkly_server.Services.Users
             Guid.TryParse(Principal?.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : null;
 
         public string? Email => Principal?.FindFirstValue(ClaimTypes.Email);
+        public string? UserName => Principal?.FindFirstValue(ClaimTypes.Name);
         public string? Role => Principal?.FindFirstValue(ClaimTypes.Role);
         public bool IsAuthenticated => Principal?.Identity?.IsAuthenticated == true;
 

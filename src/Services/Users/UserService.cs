@@ -45,14 +45,31 @@ namespace sparkly_server.Services.UserServices
             return user;
         }
 
-        public async Task<User?> ValidateUserAsync(string email, string password, CancellationToken ct = default)
+        public async Task<User?> ValidateUserAsync(string identifier, string password, CancellationToken ct = default)
         {
-            var user = await _users.GetByEmailAsync(email, ct);
-            if (user is null)
+            if (string.IsNullOrWhiteSpace(identifier))
             {
                 return null;
             }
 
+            User? user;
+
+            if (identifier.Contains("@"))
+            {
+                // traktujemy jako email
+                user = await _users.GetByEmailAsync(identifier, ct);
+            }
+            else
+            {
+                // traktujemy jako username
+                user = await _users.GetByUserNameAsync(identifier, ct);
+            }
+
+            if (user is null)
+            {
+                return null;
+            }
+            
             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
             if (result is PasswordVerificationResult.Failed)
             {

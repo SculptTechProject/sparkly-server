@@ -13,9 +13,9 @@ namespace sparkly_server.Services.Auth
             _jwtProvider = jwtProvider;
         }
 
-        public async Task<AuthResult?> LoginAsync(string email, string password, CancellationToken ct = default)
+        public async Task<AuthResult?> LoginAsync(string identifier, string password, CancellationToken ct = default)
         {
-            var user = await _userService.ValidateUserAsync(email, password, ct);
+            var user = await _userService.ValidateUserAsync(identifier, password, ct);
             if (user is null)
             {
                 return null;

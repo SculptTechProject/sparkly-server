@@ -12,9 +12,6 @@ namespace sparkly_server.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly ICurrentUser _currentUser;
-        private readonly IUserService _userService;
-        private readonly IJwtProvider _jwtProvider;
-        private readonly IAuthService _authService;
         private readonly AppDbContext _db;
 
         public ProfileController(ICurrentUser currentUser, AppDbContext db)

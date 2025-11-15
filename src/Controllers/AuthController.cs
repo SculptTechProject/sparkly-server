@@ -45,5 +45,35 @@ namespace sparkly_server.Controllers
 
             return Ok(response);
         }
+        
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequest request, CancellationToken ct)
+        {
+            await _authService.LogoutAsync(request.RefreshToken, ct);
+            return NoContent();
+        }
+        
+        [HttpPost("refresh")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Refresh(
+            [FromBody] RefreshRequest request,
+            CancellationToken ct)
+        {
+            if (string.IsNullOrWhiteSpace(request.RefreshToken))
+            {
+                return BadRequest(new { message = "Refresh token is required." });
+            }
+
+            var result = await _authService.RefreshAsync(request.RefreshToken, ct);
+
+            if (result is null)
+            {
+                return Unauthorized(new { message = "Invalid or expired refresh token." });
+            }
+
+            return Ok(result);
+        }
+
     }
 }

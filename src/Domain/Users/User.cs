@@ -9,6 +9,7 @@ namespace sparkly_server.Domain
         public string UserName { get; set; } = default!;
         public string PasswordHash { get; private set; } = default!;
         public string Role { get; private set; } = "User";
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
         private User() { }

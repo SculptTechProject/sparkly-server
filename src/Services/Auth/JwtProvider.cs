@@ -26,6 +26,7 @@ namespace sparkly_server.Services.Auth
             {
                 new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new(JwtRegisteredClaimNames.Email, user.Email),
+                new(ClaimTypes.Name, user.UserName),
                 new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new(ClaimTypes.Role, user.Role),
             };

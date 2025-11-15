@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using sparkly_server.Domain;
+using sparkly_server.Domain.Auth;
 
 namespace sparkly_server.Infrastructure
 {
     public class AppDbContext : DbContext
     {
         public DbSet<User> Users => Set<User>();
+        public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
@@ -16,6 +18,7 @@ namespace sparkly_server.Infrastructure
         {
             base.OnModelCreating(modelBuilder);
 
+            // Users
             modelBuilder.Entity<User>(cfg =>
             {
                 cfg.ToTable("users");
@@ -33,6 +36,29 @@ namespace sparkly_server.Infrastructure
                     .IsUnique();
 
                 cfg.Property(u => u.PasswordHash)
+                    .IsRequired();
+                
+                cfg.HasMany(u => u.RefreshTokens)
+                    .WithOne(rt => rt.User)
+                    .HasForeignKey(rt => rt.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+            
+            // Refresh Tokens
+            modelBuilder.Entity<RefreshToken>(cfg =>
+            {
+                cfg.ToTable("refresh_tokens");
+
+                cfg.HasKey(rt => rt.Id);
+
+                cfg.Property(rt => rt.Token)
+                    .IsRequired()
+                    .HasMaxLength(512);
+
+                cfg.Property(rt => rt.CreatedAt)
+                    .IsRequired();
+
+                cfg.Property(rt => rt.ExpiresAt)
                     .IsRequired();
             });
         }

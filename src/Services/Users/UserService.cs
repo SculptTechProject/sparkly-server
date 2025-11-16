@@ -56,12 +56,12 @@ namespace sparkly_server.Services.UserServices
 
             if (identifier.Contains("@"))
             {
-                // traktujemy jako email
+                // we treat it as email
                 user = await _users.GetByEmailAsync(identifier, ct);
             }
             else
             {
-                // traktujemy jako username
+                // we treat it as a username
                 user = await _users.GetByUserNameAsync(identifier, ct);
             }
 

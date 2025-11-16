@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using sparkly_server.Domain;
 using sparkly_server.Domain.Auth;
+using sparkly_server.Domain.Projects;
 
 namespace sparkly_server.Infrastructure
 {
     public class AppDbContext : DbContext
     {
         public DbSet<User> Users => Set<User>();
+        public DbSet<Project> Projects => Set<Project>();
         public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
@@ -61,6 +63,45 @@ namespace sparkly_server.Infrastructure
                 cfg.Property(rt => rt.ExpiresAt)
                     .IsRequired();
             });
+            
+            // Projects
+            modelBuilder.Entity<Project>(cfg =>
+                {
+                    cfg.ToTable("projects");
+                    
+                    cfg.HasKey(p => p.Id);
+                    
+                    cfg.Property(p => p.ProjectName)
+                        .IsRequired()
+                        .HasMaxLength(200);
+
+                    cfg.Property(p => p.Description)
+                        .HasMaxLength(2000);
+
+                    cfg.Property(p => p.Slug)
+                        .IsRequired()
+                        .HasMaxLength(256);
+
+                    cfg.Property(p => p.CreatedAt)
+                        .IsRequired();
+
+                    cfg.Property(p => p.UpdatedAt)
+                        .IsRequired();
+
+                    cfg.Property(p => p.OwnerId)
+                        .IsRequired();
+
+                    cfg.Property(p => p.Visibility)
+                        .IsRequired();
+                    
+                    cfg.HasMany(typeof(User), "_members")
+                        .WithMany("_projects")
+                        .UsingEntity(j =>
+                        {
+                            j.ToTable("project_members");
+                        });
+                }
+            );
         }
     }
 }

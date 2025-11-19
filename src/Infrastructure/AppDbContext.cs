@@ -71,6 +71,9 @@ namespace sparkly_server.Infrastructure
                     cfg.ToTable("projects");
                     
                     cfg.HasKey(p => p.Id);
+
+                    cfg.HasIndex(p => p.ProjectName)
+                        .IsUnique();
                     
                     cfg.Property(p => p.ProjectName)
                         .IsRequired()

@@ -27,6 +27,11 @@ namespace sparkly_server.Services.Projects
             
             var owner = await _users.GetByIdAsync(userId, cancellationToken)
                 ?? throw new InvalidOperationException("Owner not found");
+
+            if (await _projects.IsProjectNameTakenAsync(name, cancellationToken))
+            {
+                throw new InvalidOperationException("ProjectName already taken.");
+            }
             
             var project = Project.Create(owner, name, description, visibility);
             
@@ -54,12 +59,17 @@ namespace sparkly_server.Services.Projects
                          ?? throw new InvalidOperationException("User is not authenticated");
 
             var project = await _projects.GetByIdAsync(projectId, cancellationToken);
-            if (project is null)
+            if (project is null || string.IsNullOrWhiteSpace(newName))
                 throw new InvalidOperationException("ProjectName not found");
 
             if (!project.IsOwner(userId))
                 throw new UnauthorizedAccessException("You are not the owner of this project.");
 
+            if (await _projects.IsProjectNameTakenAsync(newName, cancellationToken))
+            {
+                throw new InvalidOperationException("ProjectName already taken.");
+            }
+            
             project.Rename(newName);
 
             await _projects.SaveChangesAsync(cancellationToken);

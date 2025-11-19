@@ -9,6 +9,7 @@ using sparkly_server.Services.Users;
 namespace sparkly_server.Controllers.Projects
 {
     [ApiController]
+    [Route("api/v1/projects")]
     [Authorize]
     public class ProjectsController : ControllerBase
     {
@@ -23,6 +24,14 @@ namespace sparkly_server.Controllers.Projects
             _users = users;
         }
 
+        // [HttpGet("")]
+        // public async GetProjectGlobal([FromQuery] int take = 10, CancellationToken ct = default)
+        // {
+        //     
+        // }
+        
+        
+        [HttpPost("create")]
         public async Task<IActionResult> CreateProject([FromBody] CreateProjectRequest request)
         {
             var project = await _projects.CreateProjectAsync(request.ProjectName, request.Description, request.Visibility);
@@ -37,5 +46,13 @@ namespace sparkly_server.Controllers.Projects
             
             return Ok(response);
         }
+
+        // [HttpPut("update/{projectId:guid}")]
+        // public async Task<IActionResult> UpdateProject(Guid id, [FromBody] UpdateProjectRequest request, CancellationToken cn)
+        // {
+        //     var project = await _projects.GetProjectByIdAsync(projectId: id, cn);
+        //
+        //     project.up
+        // }
     }
 }

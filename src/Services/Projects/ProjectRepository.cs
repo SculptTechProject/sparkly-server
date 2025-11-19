@@ -32,10 +32,16 @@ namespace sparkly_server.Services.Projects
                 .Where(p => p.OwnerId == userId || p.Members.Any(m => m.Id == userId))
                 .ToListAsync(cancellationToken);
         }
-        
+        public async Task<bool> IsProjectNameTakenAsync(string projectName, CancellationToken cn)
+        {
+            return await _db.Projects
+                .AnyAsync(pn => pn.ProjectName == projectName, cn);
+        }
+
         public Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return _db.SaveChangesAsync(cancellationToken);
         }
+
     }
 }

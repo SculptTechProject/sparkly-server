@@ -24,35 +24,38 @@ namespace sparkly_server.Controllers.Projects
             _users = users;
         }
 
-        // [HttpGet("")]
-        // public async GetProjectGlobal([FromQuery] int take = 10, CancellationToken ct = default)
-        // {
-        //     
-        // }
-        
+        [HttpGet("random")]
+        public async Task<IActionResult> GetRandomProjects([FromQuery] int take = 20, CancellationToken ct = default)
+        {
+            var response = await _projects.GetRandomPublicAsync(take, ct);
+            return Ok(response);
+        }
         
         [HttpPost("create")]
         public async Task<IActionResult> CreateProject([FromBody] CreateProjectRequest request)
         {
             var project = await _projects.CreateProjectAsync(request.ProjectName, request.Description, request.Visibility);
 
-            var response = new ProjectResponse(
-                Id: project.Id,
-                ProjectName: project.ProjectName,
-                Description: project.Description,
-                Visibility: project.Visibility,
-                OwnerId: project.OwnerId
-            );
+            var response = new ProjectResponse(project);
             
             return Ok(response);
         }
 
-        // [HttpPut("update/{projectId:guid}")]
-        // public async Task<IActionResult> UpdateProject(Guid id, [FromBody] UpdateProjectRequest request, CancellationToken cn)
-        // {
-        //     var project = await _projects.GetProjectByIdAsync(projectId: id, cn);
-        //
-        //     project.up
-        // }
+        [HttpGet("{projectId:guid}")]
+        public async Task<IActionResult> GetProjectById(Guid projectId, CancellationToken ct = default)
+        {
+            var project = await _projects.GetProjectByIdAsync(projectId, ct);
+            return Ok(project);
+        }
+
+        [HttpPut("update/{projectId:guid}")]
+        public async Task<IActionResult> UpdateProject(
+            Guid projectId,
+            [FromBody] UpdateProjectRequest request,
+            CancellationToken cn = default)
+        {
+            await _projects.UpdateProjectAsync(projectId, request, cn);
+            return NoContent();
+        }
     }
 }

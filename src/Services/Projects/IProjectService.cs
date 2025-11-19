@@ -1,4 +1,5 @@
 ﻿using sparkly_server.Domain.Projects;
+using sparkly_server.DTO.Projects;
 using sparkly_server.Enum;
 
 namespace sparkly_server.Services.Projects
@@ -41,6 +42,15 @@ namespace sparkly_server.Services.Projects
         Task RemoveMemberAsync(
             Guid projectId,
             Guid userId,
+            CancellationToken cancellationToken = default);
+        
+        Task<IReadOnlyList<ProjectResponse>> GetRandomPublicAsync(
+            int take, 
+            CancellationToken ct = default);
+
+        Task UpdateProjectAsync(
+            Guid projectId,
+            UpdateProjectRequest request,
             CancellationToken cancellationToken = default);
     }
 }

@@ -8,6 +8,7 @@ using sparkly_server.Services.Users;
 using sparkly_server.Services.UserServices;
 using System.Text;
 using Scalar.AspNetCore;
+using sparkly_server.Services.Projects;
 
 namespace sparkly_server;
 
@@ -16,7 +17,6 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-     
         
         var jwtKey = builder.Configuration["SPARKLY_JWT_KEY"]
                      ?? Environment.GetEnvironmentVariable("SPARKLY_JWT_KEY");
@@ -50,11 +50,14 @@ public class Program
                 policy.RequireRole(Roles.Admin));
         });
         
+        // Services
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IJwtProvider, JwtProvider>();
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+        builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+        builder.Services.AddScoped<IProjectService, ProjectService>();
         
         var connectionString = builder.Configuration.GetConnectionString("Default")
                                ?? Environment.GetEnvironmentVariable("ConnectionStrings__Default")
@@ -66,7 +69,7 @@ public class Program
         });
 
         builder.Services.AddControllers();
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
         builder.Services.AddOpenApi();
         
         builder.Services.AddCors(options =>

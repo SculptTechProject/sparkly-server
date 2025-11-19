@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using sparkly_server.Domain.Projects;
+using sparkly_server.Enum;
 using sparkly_server.Infrastructure;
 
 namespace sparkly_server.Services.Projects
@@ -42,6 +43,14 @@ namespace sparkly_server.Services.Projects
         {
             return _db.SaveChangesAsync(cancellationToken);
         }
-
+        
+        public async Task<IReadOnlyList<Project>> GetRandomPublicAsync(int take, CancellationToken ct = default)
+        {
+            return await _db.Projects
+                .Where(p => p.Visibility == ProjectVisibility.Public)
+                .OrderBy(p => EF.Functions.Random()) 
+                .Take(take)
+                .ToListAsync(ct);
+        }
     }
 }

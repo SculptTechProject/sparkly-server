@@ -1,4 +1,5 @@
 ﻿using sparkly_server.Domain.Projects;
+using sparkly_server.DTO.Projects;
 using sparkly_server.Enum;
 using sparkly_server.Services.Users;
 
@@ -151,6 +152,52 @@ namespace sparkly_server.Services.Projects
             
             project.RemoveMember(userToRemove);
             
+            await _projects.SaveChangesAsync(cancellationToken);
+        }   
+        
+        public async Task<IReadOnlyList<ProjectResponse>> GetRandomPublicAsync(int take, CancellationToken ct = default)
+        {
+            var projects = await _projects.GetRandomPublicAsync(take, ct);
+
+            return projects
+                .Select(p => new ProjectResponse(p))
+                .ToList();
+        }
+        
+        public async Task UpdateProjectAsync(Guid projectId, UpdateProjectRequest request, CancellationToken cancellationToken = default)
+        {
+            var userId = _currentUser.UserId
+                         ?? throw new InvalidOperationException("User is not authenticated");
+
+            var project = await _projects.GetByIdAsync(projectId, cancellationToken)
+                          ?? throw new InvalidOperationException("Project not found");
+
+            var isAdmin = _currentUser.IsInRole(Roles.Admin);
+            var isOwner = project.IsOwner(userId);
+
+            if (!isOwner && !isAdmin)
+                throw new UnauthorizedAccessException("You are not allowed to edit this project.");
+
+            if (!string.IsNullOrWhiteSpace(request.ProjectName) &&
+                request.ProjectName != project.ProjectName)
+            {
+                if (await _projects.IsProjectNameTakenAsync(request.ProjectName, cancellationToken))
+                    throw new InvalidOperationException("ProjectName already taken.");
+
+                project.Rename(request.ProjectName);
+            }
+
+            if (request.Description is not null &&
+                request.Description != project.Description)
+            {
+                project.ChangeDescription(request.Description);
+            }
+
+            if (request.Visibility != project.Visibility)
+            {
+                project.SetVisibility(request.Visibility);
+            }
+
             await _projects.SaveChangesAsync(cancellationToken);
         }
     }

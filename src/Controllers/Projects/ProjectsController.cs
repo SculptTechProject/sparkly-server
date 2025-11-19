@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using sparkly_server.Domain.Projects;
+using sparkly_server.DTO.Projects;
+using sparkly_server.Enum;
 using sparkly_server.Services.Projects;
 using sparkly_server.Services.Users;
 
@@ -19,7 +22,20 @@ namespace sparkly_server.Controllers.Projects
             _currentUser = currentUser;
             _users = users;
         }
-        
-        // Controllers soon :)
+
+        public async Task<IActionResult> CreateProject([FromBody] CreateProjectRequest request)
+        {
+            var project = await _projects.CreateProjectAsync(request.ProjectName, request.Description, request.Visibility);
+
+            var response = new ProjectResponse(
+                Id: project.Id,
+                ProjectName: project.ProjectName,
+                Description: project.Description,
+                Visibility: project.Visibility,
+                OwnerId: project.OwnerId
+            );
+            
+            return Ok(response);
+        }
     }
 }

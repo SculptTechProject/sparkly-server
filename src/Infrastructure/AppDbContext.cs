@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using sparkly_server.Domain;
 using sparkly_server.Domain.Auth;
 using sparkly_server.Domain.Projects;
+using sparkly_server.Enum;
 
 namespace sparkly_server.Infrastructure
 {
@@ -92,10 +93,11 @@ namespace sparkly_server.Infrastructure
                         .IsRequired();
 
                     cfg.Property(p => p.Visibility)
+                        .HasDefaultValue(ProjectVisibility.Private)
                         .IsRequired();
                     
-                    cfg.HasMany(typeof(User), "_members")
-                        .WithMany("_projects")
+                    cfg.HasMany(p => p.Members)
+                        .WithMany(u => u.Projects)
                         .UsingEntity(j =>
                         {
                             j.ToTable("project_members");

@@ -55,7 +55,7 @@ namespace sparkly_server.Services.Projects
 
             var project = await _projects.GetByIdAsync(projectId, cancellationToken);
             if (project is null)
-                throw new InvalidOperationException("Project not found");
+                throw new InvalidOperationException("ProjectName not found");
 
             if (!project.IsOwner(userId))
                 throw new UnauthorizedAccessException("You are not the owner of this project.");
@@ -72,7 +72,7 @@ namespace sparkly_server.Services.Projects
 
             var project = await _projects.GetByIdAsync(projectId, cancellationToken);
             if (project is null)
-                throw new InvalidOperationException("Project not found");
+                throw new InvalidOperationException("ProjectName not found");
 
             if (!project.IsOwner(userId))
                 throw new UnauthorizedAccessException("You are not the owner of this project.");
@@ -88,7 +88,7 @@ namespace sparkly_server.Services.Projects
                          ?? throw new InvalidOperationException("User is not authenticated");
 
             var project = await _projects.GetByIdAsync(projectId, cancellationToken)
-                          ?? throw new InvalidOperationException("Project not found");
+                          ?? throw new InvalidOperationException("ProjectName not found");
 
             var isAdmin = _currentUser.IsInRole(Roles.Admin);
 
@@ -106,7 +106,7 @@ namespace sparkly_server.Services.Projects
                 ?? throw new InvalidOperationException("User is not authenticated");
             
             var project = await _projects.GetByIdAsync(projectId, cancellationToken)
-                ?? throw new InvalidOperationException("Project not found");
+                ?? throw new InvalidOperationException("ProjectName not found");
             
             var isAdmin = _currentUser.IsInRole(Roles.Admin);
             var isOwner = project.IsOwner(currentUser);
@@ -128,7 +128,7 @@ namespace sparkly_server.Services.Projects
                               ?? throw new InvalidOperationException("User is not authenticated");
             
             var project = await _projects.GetByIdAsync(projectId, cancellationToken)
-                          ?? throw new InvalidOperationException("Project not found");
+                          ?? throw new InvalidOperationException("ProjectName not found");
             
             var isAdmin = _currentUser.IsInRole(Roles.Admin);
             var isOwner = project.IsOwner(currentUser);

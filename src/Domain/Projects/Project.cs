@@ -63,7 +63,7 @@ namespace sparkly_server.Domain.Projects
         private void SetNameInternal(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Project name cannot be empty.", nameof(name));
+                throw new ArgumentException("ProjectName name cannot be empty.", nameof(name));
 
             ProjectName = name.Trim();
         }

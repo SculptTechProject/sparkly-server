@@ -94,6 +94,7 @@ dotnet run
 By default the API will listen on the ports defined in `appsettings.json` / `launchSettings` / environment variables (commonly `http://localhost:5000` or `http://localhost:8080`).
 
 **Option B – Docker Compose (API + DB)**
+> Recommended 
 
 ```bash
 docker compose up --build

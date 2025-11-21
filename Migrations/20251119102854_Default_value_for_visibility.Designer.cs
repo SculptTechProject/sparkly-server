@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using sparkly_server.Infrastructure;
@@ -11,9 +12,11 @@ using sparkly_server.Infrastructure;
 namespace sparkly_server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251119102854_Default_value_for_visibility")]
+    partial class Default_value_for_visibility
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,9 +112,6 @@ namespace sparkly_server.Migrations
                         .HasDefaultValue(0);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjectName")
-                        .IsUnique();
 
                     b.ToTable("projects", (string)null);
                 });

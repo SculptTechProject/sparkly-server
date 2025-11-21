@@ -1,4 +1,5 @@
 using sparkly_server.Domain.Auth;
+using sparkly_server.Domain.Projects;
 
 namespace sparkly_server.Domain
 {
@@ -11,6 +12,7 @@ namespace sparkly_server.Domain
         public string Role { get; private set; } = "User";
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+        public ICollection<Project> Projects { get; private set; } = new List<Project>();
 
         private User() { }
 

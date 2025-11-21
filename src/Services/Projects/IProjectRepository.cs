@@ -10,5 +10,6 @@ namespace sparkly_server.Services.Projects
         Task<bool> IsProjectNameTakenAsync(string projectName, CancellationToken cn);
         Task<IReadOnlyList<Project>> GetRandomPublicAsync(int take, CancellationToken ct = default);
         Task SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

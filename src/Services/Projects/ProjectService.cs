@@ -200,5 +200,23 @@ namespace sparkly_server.Services.Projects
 
             await _projects.SaveChangesAsync(cancellationToken);
         }
+        public async Task DeleteProjectAsync(Guid projectId, CancellationToken cancellationToken = default)
+        {
+            var userId = _currentUser.UserId
+                         ?? throw new InvalidOperationException("User is not authenticated");
+
+            var project = await _projects.GetByIdAsync(projectId, cancellationToken)
+                          ?? throw new InvalidOperationException("Project not found");
+
+            var isAdmin = _currentUser.IsInRole(Roles.Admin);
+            var isOwner = project.IsOwner(userId);
+
+            if (!isOwner && !isAdmin)
+                throw new UnauthorizedAccessException("You are not allowed to delete this project.");
+
+            _projects.DeleteAsync(projectId, cancellationToken);
+            
+            await _projects.SaveChangesAsync(cancellationToken);
+        }
     }
 }

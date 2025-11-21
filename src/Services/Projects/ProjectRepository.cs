@@ -43,7 +43,13 @@ namespace sparkly_server.Services.Projects
         {
             return _db.SaveChangesAsync(cancellationToken);
         }
-        
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            await _db.Projects
+                .Where(p => p.Id == id)
+                .ExecuteDeleteAsync(cancellationToken);
+        }
+
         public async Task<IReadOnlyList<Project>> GetRandomPublicAsync(int take, CancellationToken ct = default)
         {
             return await _db.Projects

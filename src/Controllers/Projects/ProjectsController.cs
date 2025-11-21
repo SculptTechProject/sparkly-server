@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sparkly_server.Domain.Projects;
 using sparkly_server.DTO.Projects;
-using sparkly_server.Enum;
 using sparkly_server.Services.Projects;
-using sparkly_server.Services.Users;
 
 namespace sparkly_server.Controllers.Projects
 {
@@ -14,16 +11,10 @@ namespace sparkly_server.Controllers.Projects
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectService _projects;
-        private readonly ICurrentUser _currentUser;
-        private readonly IUserService _users;
         
-        public ProjectsController(IProjectService projects, ICurrentUser currentUser, IUserService users)
-        {
-            _projects = projects;
-            _currentUser = currentUser;
-            _users = users;
-        }
-
+        public ProjectsController(IProjectService projects) => _projects = projects;
+        
+        // Random projects to feed the homepage
         [HttpGet("random")]
         public async Task<IActionResult> GetRandomProjects([FromQuery] int take = 20, CancellationToken ct = default)
         {
@@ -31,6 +22,7 @@ namespace sparkly_server.Controllers.Projects
             return Ok(response);
         }
         
+        // Create project
         [HttpPost("create")]
         public async Task<IActionResult> CreateProject([FromBody] CreateProjectRequest request)
         {
@@ -41,6 +33,7 @@ namespace sparkly_server.Controllers.Projects
             return Ok(response);
         }
 
+        // Get project by id
         [HttpGet("{projectId:guid}")]
         public async Task<IActionResult> GetProjectById(Guid projectId, CancellationToken ct = default)
         {
@@ -48,6 +41,7 @@ namespace sparkly_server.Controllers.Projects
             return Ok(project);
         }
 
+        // Update project by id (admin only)
         [HttpPut("update/{projectId:guid}")]
         public async Task<IActionResult> UpdateProject(
             Guid projectId,
@@ -55,6 +49,15 @@ namespace sparkly_server.Controllers.Projects
             CancellationToken cn = default)
         {
             await _projects.UpdateProjectAsync(projectId, request, cn);
+            return NoContent();
+        }
+        
+        // Delete project by id (admin only)
+        [HttpDelete("delete/{projectId:guid}")]
+        public async Task<IActionResult> DeleteProject(Guid projectId, CancellationToken ct = default)
+        {
+            await _projects.DeleteProjectAsync(projectId, ct);
+            
             return NoContent();
         }
     }

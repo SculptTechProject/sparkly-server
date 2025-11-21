@@ -52,5 +52,9 @@ namespace sparkly_server.Services.Projects
             Guid projectId,
             UpdateProjectRequest request,
             CancellationToken cancellationToken = default);
+        
+        Task DeleteProjectAsync(
+            Guid projectId, 
+            CancellationToken cancellationToken = default);
     }
 }

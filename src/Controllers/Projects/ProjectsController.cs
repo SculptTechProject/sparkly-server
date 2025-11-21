@@ -22,6 +22,14 @@ namespace sparkly_server.Controllers.Projects
             return Ok(response);
         }
         
+        // Get project by id
+        [HttpGet("{projectId:guid}")]
+        public async Task<IActionResult> GetProjectById(Guid projectId, CancellationToken ct = default)
+        {
+            var project = await _projects.GetProjectByIdAsync(projectId, ct);
+            return Ok(project);
+        }
+        
         // Create project
         [HttpPost("create")]
         public async Task<IActionResult> CreateProject([FromBody] CreateProjectRequest request)
@@ -31,14 +39,6 @@ namespace sparkly_server.Controllers.Projects
             var response = new ProjectResponse(project);
             
             return Ok(response);
-        }
-
-        // Get project by id
-        [HttpGet("{projectId:guid}")]
-        public async Task<IActionResult> GetProjectById(Guid projectId, CancellationToken ct = default)
-        {
-            var project = await _projects.GetProjectByIdAsync(projectId, ct);
-            return Ok(project);
         }
 
         // Update project by id (admin only)

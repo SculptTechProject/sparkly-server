@@ -1,7 +1,7 @@
 using sparkly_server.Domain.Auth;
 using sparkly_server.Domain.Projects;
 
-namespace sparkly_server.Domain
+namespace sparkly_server.Domain.Users
 {
     public class User
     {

@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
 using sparkly_server.Enum;
 using sparkly_server.Infrastructure;
 using sparkly_server.Services.Auth;
-using sparkly_server.Services.Users;
-using sparkly_server.Services.UserServices;
 using sparkly_server.Services.Projects;
-using Scalar.AspNetCore;
+using sparkly_server.Services.Users;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

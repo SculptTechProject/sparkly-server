@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using sparkly_server.Infrastructure;
 
-namespace sparkly_server.test;
+namespace Sparkly.Tests.Infrastructure;
 
 public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
@@ -13,9 +13,9 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
     {
         builder.UseEnvironment("Testing");
         
-        builder.ConfigureAppConfiguration((context, config) =>
+        builder.ConfigureAppConfiguration((config) =>
         {
-            var settings = new Dictionary<string, string>
+            var settings = new Dictionary<string, string?>
             {
                 ["SPARKLY_JWT_KEY"] = "this-is-very-long-test-jwt-key-123456",
                 ["SPARKLY_JWT_ISSUER"] = "sparkly-test-issuer"

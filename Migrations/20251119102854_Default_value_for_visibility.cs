@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace sparkly_server.Migrations
+namespace sparkly_server.Services.Users.Migrations
 {
     /// <inheritdoc />
     public partial class Default_value_for_visibility : Migration

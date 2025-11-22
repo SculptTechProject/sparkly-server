@@ -1,5 +1,5 @@
 using Microsoft.IdentityModel.Tokens;
-using sparkly_server.Domain;
+using sparkly_server.Domain.Users;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;

@@ -1,6 +1,7 @@
-﻿using System.Net;
+﻿using Sparkly.Tests.Infrastructure;
+using System.Net;
 
-namespace sparkly_server.test;
+namespace sparkly_server.Services.Users.test;
 
 public class HealthzTest : IClassFixture<TestWebApplicationFactory>
 {

@@ -1,13 +1,14 @@
-﻿using sparkly_server.Enum;
+﻿using sparkly_server.Domain.Users;
+using sparkly_server.Enum;
 
 namespace sparkly_server.Domain.Projects
 {
     public class Project
     {
         public Guid Id { get; private set; }
-        public string ProjectName { get; private set; }
-        public string Description { get; private set; }
-        public string Slug { get; private set; }
+        public string ProjectName { get; private set; } = string.Empty;
+        public string Description { get; private set; } = string.Empty;
+        public string Slug { get; private set; } = string.Empty;
         public DateTime CreatedAt { get; private set; }
         public Guid OwnerId { get; private set; }
         private readonly List<string> _tags = new();
@@ -152,7 +153,7 @@ namespace sparkly_server.Domain.Projects
             if (user is null)
                 throw new ArgumentNullException(nameof(user));
 
-            if (_members.Any(m => m.Id == user.Id))
+            if (!_members.Any(m => m.Id == user.Id))
                 return;
 
             _members.Remove(user);

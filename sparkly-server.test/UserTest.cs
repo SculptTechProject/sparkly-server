@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using sparkly_server.DTO;
+using sparkly_server.DTO.Auth;
 using sparkly_server.Infrastructure;
+using Sparkly.Tests.Infrastructure;
 using System.Text;
 using System.Text.Json;
 
-namespace sparkly_server.test
+namespace sparkly_server.Services.Users.test
 {
     public class UserTest : IClassFixture<TestWebApplicationFactory>, IAsyncLifetime
     {

@@ -6,16 +6,25 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>sparkly_server</RootNamespace>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <IsTestProject>false</IsTestProject>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="coverlet.collector" Version="6.0.0">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.11">
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.11">
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -23,6 +32,11 @@
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="Scalar.AspNetCore" Version="2.10.3" />
+        <PackageReference Include="xunit" Version="2.9.3" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>

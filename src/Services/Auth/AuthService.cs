@@ -55,7 +55,7 @@ namespace sparkly_server.Services.Auth
         {
             if (string.IsNullOrWhiteSpace(refreshToken))
             {
-                return null;
+                return null!;
             }
 
             var entity = await _db.RefreshTokens
@@ -64,7 +64,7 @@ namespace sparkly_server.Services.Auth
 
             if (entity is null || !entity.IsActive)
             {
-                return null;
+                return null!;
             }
 
             var user = entity.User;

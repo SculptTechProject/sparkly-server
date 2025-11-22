@@ -1,4 +1,4 @@
-using sparkly_server.Domain;
+using sparkly_server.Domain.Users;
 
 namespace sparkly_server.Services.Users
 {

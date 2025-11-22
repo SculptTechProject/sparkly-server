@@ -9,7 +9,7 @@ using sparkly_server.Infrastructure;
 
 #nullable disable
 
-namespace sparkly_server.Migrations
+namespace sparkly_server.Services.Users.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20251119102854_Default_value_for_visibility")]

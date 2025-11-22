@@ -41,9 +41,11 @@ namespace sparkly_server.Services.Projects
             return project;
         }
         
-        public Task<Project> GetProjectByIdAsync(Guid projectId, CancellationToken cancellationToken = default)
+        public async Task<Project> GetProjectByIdAsync(Guid projectId, CancellationToken cancellationToken = default)
         {
-            var project = _projects.GetByIdAsync(projectId, cancellationToken);
+            var project = await _projects.GetByIdAsync(projectId, cancellationToken)
+                          ?? throw new InvalidOperationException("Project not found");
+
             return project;
         }
         
@@ -214,7 +216,7 @@ namespace sparkly_server.Services.Projects
             if (!isOwner && !isAdmin)
                 throw new UnauthorizedAccessException("You are not allowed to delete this project.");
 
-            _projects.DeleteAsync(projectId, cancellationToken);
+            await _projects.DeleteAsync(projectId, cancellationToken);
             
             await _projects.SaveChangesAsync(cancellationToken);
         }

@@ -47,4 +47,10 @@
       <Content Include=".github\workflows\ci.yml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="sparkly-server.test\HealthzTest.cs" />
+      <Compile Remove="sparkly-server.test\TestWebAppliactionFactory.cs" />
+      <Compile Remove="sparkly-server.test\UserTest.cs" />
+    </ItemGroup>
+
 </Project>

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace sparkly_server.Migrations
+namespace sparkly_server.Services.Users.Migrations
 {
     /// <inheritdoc />
     public partial class Members_project : Migration

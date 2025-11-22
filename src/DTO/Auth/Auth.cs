@@ -1,4 +1,4 @@
-namespace sparkly_server.DTO
+namespace sparkly_server.DTO.Auth
 {
     public record RegisterRequest(string Username, string Email, string Password);
     public record LoginRequest(string Identifier, string Password);

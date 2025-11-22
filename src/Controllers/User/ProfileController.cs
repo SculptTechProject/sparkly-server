@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using sparkly_server.Infrastructure;
-using sparkly_server.Services.Auth;
 using sparkly_server.Services.Users;
 
-namespace sparkly_server.Controllers
+namespace sparkly_server.Controllers.User
 {
     [Authorize]
     [ApiController]

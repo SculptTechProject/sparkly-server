@@ -1,16 +1,28 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using sparkly_server.Infrastructure;
 
-namespace sparkly_server.test;
+namespace Sparkly.Tests.Infrastructure;
 
 public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
+        
+        builder.ConfigureAppConfiguration((config) =>
+        {
+            var settings = new Dictionary<string, string?>
+            {
+                ["SPARKLY_JWT_KEY"] = "this-is-very-long-test-jwt-key-123456",
+                ["SPARKLY_JWT_ISSUER"] = "sparkly-test-issuer"
+            };
+
+            config.AddInMemoryCollection(settings);
+        });
 
         builder.ConfigureServices(services =>
         {
@@ -26,6 +38,13 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             {
                 options.UseInMemoryDatabase("sparkly-tests");
             });
+
+            var sp = services.BuildServiceProvider();
+
+            using var scope = sp.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            db.Database.EnsureDeleted();
+            db.Database.EnsureCreated();
         });
     }
 }

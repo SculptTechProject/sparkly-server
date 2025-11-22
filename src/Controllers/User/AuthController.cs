@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sparkly_server.DTO;
+using sparkly_server.DTO.Auth;
 using sparkly_server.Services.Auth;
 using sparkly_server.Services.Users;
 
-namespace sparkly_server.Controllers
+namespace sparkly_server.Controllers.User
 {
     [ApiController]
     [Route("api/v1/auth")]

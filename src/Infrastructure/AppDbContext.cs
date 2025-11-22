@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using sparkly_server.Domain;
 using sparkly_server.Domain.Auth;
 using sparkly_server.Domain.Projects;
+using sparkly_server.Domain.Users;
 using sparkly_server.Enum;
 
 namespace sparkly_server.Infrastructure

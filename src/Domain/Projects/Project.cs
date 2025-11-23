@@ -93,7 +93,6 @@ namespace sparkly_server.Domain.Projects
          public void Rename(string newName)
         {
             SetNameInternal(newName);
-            // Jeśli chcesz, aby slug szedł za nazwą:
             Slug = NormalizeSlug(newName);
             Touch();
         }

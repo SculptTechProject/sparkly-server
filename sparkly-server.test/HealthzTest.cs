@@ -1,22 +1,22 @@
-﻿using Sparkly.Tests.Infrastructure;
-using System.Net;
+﻿using System.Net;
 
-namespace sparkly_server.Services.Users.test;
-
-public class HealthzTest : IClassFixture<TestWebApplicationFactory>
+namespace sparkly_server.test
 {
-    private readonly HttpClient _client;
-
-    public HealthzTest(TestWebApplicationFactory factory)
+    public class HealthzTest : IClassFixture<TestWebApplicationFactory>
     {
-        _client = factory.CreateClient();
-    }
+        private readonly HttpClient _client;
 
-    [Fact]
-    public async Task Healthz_ReturnsOk()
-    {
-        var response = await _client.GetAsync("/healthz");
+        public HealthzTest(TestWebApplicationFactory factory)
+        {
+            _client = factory.CreateClient();
+        }
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        [Fact]
+        public async Task Healthz_ReturnsOk()
+        {
+            var response = await _client.GetAsync("/healthz");
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
     }
 }

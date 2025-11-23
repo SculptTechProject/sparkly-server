@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using sparkly_server.DTO.Auth;
 using sparkly_server.Infrastructure;
-using Sparkly.Tests.Infrastructure;
 using System.Text;
 using System.Text.Json;
 
-namespace sparkly_server.Services.Users.test
+namespace sparkly_server.test
 {
     public class UserTest : IClassFixture<TestWebApplicationFactory>, IAsyncLifetime
     {
@@ -29,7 +28,16 @@ namespace sparkly_server.Services.Users.test
         }
 
         public Task DisposeAsync() => Task.CompletedTask;
-        
+
+        /// <summary>
+        /// Registers a test user in the system by sending a registration request to the API.
+        /// </summary>
+        /// <param name="userName">The username of the user to register.</param>
+        /// <param name="email">The email address of the user to register.</param>
+        /// <param name="password">The password of the user to register.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+
+        // Helper
         private async Task RegisterTestUserAsync(string userName, string email, string password)
         {
             var payload = new RegisterRequest(Username: userName, Email: email, Password: password);
@@ -44,6 +52,7 @@ namespace sparkly_server.Services.Users.test
             response.EnsureSuccessStatusCode();
         }
         
+        // Tests
         [Fact]
         public async Task User_CanBeCreated()
         {

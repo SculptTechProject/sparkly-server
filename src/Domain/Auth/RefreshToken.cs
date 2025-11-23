@@ -27,6 +27,11 @@ namespace sparkly_server.Domain.Auth
             ExpiresAt = expiresAt;
         }
 
+        /// <summary>
+        /// Revokes the refresh token by marking it as no longer active.
+        /// </summary>
+        /// <param name="ip">The IP address from which the revoke operation is made.</param>
+        /// <param name="replacedByToken">An optional new token that replaces the current token.</param>
         public void Revoke(string? ip = null, string? replacedByToken = null)
         {
             if (RevokedAt is not null)

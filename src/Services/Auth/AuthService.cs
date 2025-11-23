@@ -20,6 +20,13 @@ namespace sparkly_server.Services.Auth
             _db = db;
         }
 
+        /// <summary>
+        /// Authenticates a user based on the provided credentials and generates an authentication result containing tokens.
+        /// </summary>
+        /// <param name="identifier">The user's identifier, such as username or email address.</param>
+        /// <param name="password">The user's password.</param>
+        /// <param name="ct">A cancellation token to observe while awaiting the task.</param>
+        /// <returns>An AuthResult object containing the access token, refresh token, and their expiry times, or null if authentication fails.</returns>
         public async Task<AuthResult?> LoginAsync(string identifier, string password, CancellationToken ct = default)
         {
             var user = await _userService.ValidateUserAsync(identifier, password, ct);
@@ -51,6 +58,12 @@ namespace sparkly_server.Services.Auth
             );
         }
 
+        /// <summary>
+        /// Refreshes the user's authentication tokens by validating the provided refresh token and generating a new access token.
+        /// </summary>
+        /// <param name="refreshToken">The existing refresh token issued to the user for renewing authentication.</param>
+        /// <param name="ct">A cancellation token to observe while performing the refresh operation.</param>
+        /// <returns>An AuthResult object containing the new access token, the provided refresh token, and their respective expiry times. Returns null if the refresh token is invalid or inactive.</returns>
         public async Task<AuthResult> RefreshAsync(string refreshToken, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(refreshToken))
@@ -81,6 +94,12 @@ namespace sparkly_server.Services.Auth
             );
         }
 
+        /// <summary>
+        /// Revokes a refresh token to log the user out by marking the token as revoked in the database.
+        /// </summary>
+        /// <param name="refreshToken">The token to be revoked, which identifies the user session.</param>
+        /// <param name="ct">A cancellation token to observe while awaiting the task.</param>
+        /// <returns>A Task representing the asynchronous operation.</returns>
         public async Task LogoutAsync(string refreshToken, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(refreshToken))

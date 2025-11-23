@@ -49,8 +49,9 @@
 
     <ItemGroup>
       <Compile Remove="sparkly-server.test\HealthzTest.cs" />
-      <Compile Remove="sparkly-server.test\TestWebAppliactionFactory.cs" />
       <Compile Remove="sparkly-server.test\UserTest.cs" />
+      <Compile Remove="sparkly-server.test\ProjectTest.cs" />
+      <Compile Remove="sparkly-server.test\TestWebAppliactionFactory.cs" />
     </ItemGroup>
 
 </Project>

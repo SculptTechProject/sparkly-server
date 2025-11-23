@@ -1,8 +1,8 @@
 # Sparkly Server
 
-Backend API for **Sparkly**, a build‑in‑public social platform. This repository contains the C# / .NET backend that powers authentication, user accounts and the core application features used by the Sparkly web client.
+Backend API for **Sparkly**, a build‑in‑public social platform. This repository contains the C# / .NET backend that powers authentication, user accounts, project management and the core application features used by the Sparkly web client.
 
-> Status: early development – API surface and architecture are evolving.
+> Status: early development – API surface, architecture and testing pipeline are actively evolving.
 
 ---
 
@@ -10,28 +10,30 @@ Backend API for **Sparkly**, a build‑in‑public social platform. This reposit
 
 * **.NET**: .NET 9 (ASP.NET Core Web API)
 * **Data access**: Entity Framework Core (code‑first migrations)
-* **Database**: PostgreSQL (via Docker) or local dev database
+* **Database**: PostgreSQL (local or via Docker)
 * **Containerization**: Docker + Docker Compose
+* **Tests**: xUnit integration tests using TestServer
+* **CI/CD**: GitHub Actions (build + tests + optional Docker build)
 * **Tooling**: `dotnet` CLI, EF Core CLI
 
 ---
 
 ## Project structure
 
-High‑level layout of the repository:
-
 ```text
 sparkly-server/
+├─ src/                     # API, domain, infrastructure
 ├─ Migrations/              # EF Core migrations
-├─ src/                     # Application source code (API, domain, infrastructure)
-├─ Program.cs               # Application bootstrap / entrypoint
-├─ compose.yaml             # Docker Compose stack (API + database)
-├─ Dockerfile               # Image for the API service
-├─ appsettings.json         # Base configuration (non‑secret)
-└─ appsettings.Development.json  # Local overrides (DO NOT commit secrets)
+├─ sparkly-server.test/     # Integration tests
+├─ Program.cs               # Entrypoint
+├─ compose.yaml             # Docker Compose stack (API + DB)
+├─ Dockerfile               # API image
+├─ .github/workflows/       # GitHub Actions CI
+├─ appsettings.json         # Base config (non-secret)
+└─ appsettings.Development.json  # Local overrides
 ```
 
-The `src` folder is where the actual application code lives (controllers, domain models, services, etc.). As the project grows, this will be organized into clear layers (e.g. `Api`, `Application`, `Domain`, `Infrastructure`).
+The `src` directory contains controllers, domain models, services, repositories and configuration. Tests live in a separate project with isolated database state.
 
 ---
 
@@ -39,103 +41,119 @@ The `src` folder is where the actual application code lives (controllers, domain
 
 ### Prerequisites
 
-* .NET 9 SDK installed
-* Docker + Docker Compose installed (for running the full stack)
+* .NET 9 SDK
+* Docker + Docker Compose
 * Git
 
-### 1. Clone the repository
+### Clone
 
 ```bash
 git clone https://github.com/SculptTechProject/sparkly-server.git
 cd sparkly-server
 ```
 
-### 2. Configure environment
+### Environment configuration
 
-The backend expects configuration from `appsettings.json` and environment variables. **Secrets must never be committed to the repo.**
+The backend reads configuration from `appsettings.json` and environment variables. Do not commit secrets.
 
-Create a local environment file (for your own use) or set environment variables via your shell / Docker:
+Example variables:
 
 ```bash
-# Example – adjust names/values to match the codebase
 export ASPNETCORE_ENVIRONMENT=Development
 export ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=sparkly;Username=sparkly;Password=changeme"
-
-# Example if you add auth / JWT later
 export Jwt__Issuer="https://sparkly.local"
 export Jwt__Audience="sparkly-app"
 export Jwt__Secret="super-long-random-secret-key-change-me"
 ```
 
-Keep a non‑secret example in the repo as `appsettings.Development.example.json` or `.env.example` (recommended), and use it to document required keys.
+A `.env.example` or `appsettings.Development.example.json` is recommended to document required keys.
 
-### 3. Apply database migrations (optional but recommended)
-
-If EF Core migrations are used, apply them before running the API:
+### Database migrations
 
 ```bash
 dotnet restore
-
 dotnet ef database update
 ```
 
-If you use Docker with a database container, you can also let the application apply migrations on startup (depending on how the bootstrapping is implemented).
+Or let Docker apply migrations at startup, depending on configuration.
 
-### 4. Run the API locally
+### Run locally
 
-**Option A – `dotnet run`**
+**Dotnet CLI:**
 
 ```bash
 dotnet restore
-
 dotnet run
 ```
 
-By default the API will listen on the ports defined in `appsettings.json` / `launchSettings` / environment variables (commonly `http://localhost:5000` or `http://localhost:8080`).
-
-**Option B – Docker Compose (API + DB)**
-> Recommended 
+**Docker Compose:**
 
 ```bash
 docker compose up --build
 ```
 
-This will:
-
-* build the backend image using `Dockerfile`,
-* start the API container,
-* start the database container defined in `compose.yaml`.
-
-Check the logs to confirm that the API is healthy and connected to the database.
+This builds the API image and launches both the API and PostgreSQL.
 
 ---
 
-## API surface (high‑level)
+## Tests
 
-This backend is responsible for the core Sparkly features, for example:
+The project includes integration tests that run the API using an in-memory test server. Tests reset database state for every run.
 
-* user registration and login,
-* user profile data and settings,
-* Sparkly dashboard / feed backend endpoints,
-* future billing / subscriptions integration (Stripe),
-* admin / internal endpoints for moderation and analytics.
+Run tests locally:
 
-As the project grows, consider documenting endpoints using:
+```bash
+dotnet test
+```
 
-* **OpenAPI / Swagger** (Swashbuckle),
-* or minimal API documentation in `README` (auth endpoints, example requests/responses).
+Run tests using Docker Compose:
+
+```bash
+docker compose run --rm api dotnet test
+```
 
 ---
 
-## Docker
+## GitHub Actions (CI)
 
-### Build image manually
+This repository contains a CI pipeline that runs on every push and pull request:
+
+* restore and build
+* run tests
+* optionally build Docker image
+
+This ensures that the API and tests stay green across contributions.
+
+---
+
+## API overview
+
+The backend currently covers:
+
+* user registration and login
+* user profile and authentication
+* project creation and management
+
+Planned additions:
+
+* feed system for build-in-public updates
+* real‑time notifications
+* billing and subscription logic
+* moderation and admin endpoints
+
+Documentation will be available through OpenAPI/Swagger.
+
+---
+
+## Docker commands
+
+Build image manually:
 
 ```bash
 docker build -t sparkly-server .
 ```
 
-### Run container manually
+Run image manually:
 
 ```bash
 docker run \
@@ -145,66 +163,46 @@ docker run \
   sparkly-server
 ```
 
-In practice you will usually prefer `docker compose up` because it brings up the database and the API together.
-
 ---
 
-## Configuration & secrets
+## Secrets
 
-**Important:**
+Secrets must always be supplied using environment variables or secret management tools. Never commit real credentials.
 
-* API keys, JWT secrets, Stripe keys, and real database credentials **must never** live in the Git repository.
-* Use environment variables / secret managers in development and production.
+Likely future keys:
 
-Recommended pattern:
-
-* commit a `.env.example` (or `appsettings.Development.example.json`) with all required keys but without real secrets,
-* document each key in a short comment / table so contributors know what to set.
-
-Example keys you are likely to add as Sparkly evolves:
-
-* `Stripe__SecretKey`
-* `Stripe__WebhookSecret`
-* `Jwt__Secret`
-* `Jwt__Issuer`
-* `Jwt__Audience`
+* Stripe secrets
+* JWT settings
+* OAuth providers (GitHub, Google)
 
 ---
 
 ## Development workflow
 
-Suggested workflow while the project is young:
+1. Create a small issue or task.
+2. Implement changes on a feature branch.
+3. Add or update tests.
+4. Run local build and tests.
+5. Push and open a PR.
 
-1. Create a small issue / task (feature, refactor, bugfix).
-2. Work on a feature branch.
-3. Add or update tests (unit/integration) around new behaviour.
-4. Run tests and `dotnet build` locally.
-5. Open a PR (even if you are the only contributor – PR history becomes project documentation).
-
-This keeps the history clean and makes it easier to reason about changes later.
+This keeps the project clean and easy to maintain.
 
 ---
 
-## Roadmap ideas
+## Roadmap (short‑term)
 
-Some directions for the Sparkly backend:
-
-* Authentication & authorization layer (JWT, refresh tokens, roles/permissions).
-* First version of the "build in public" feed (posts, comments, reactions).
-* Real‑time communication (SignalR or WebSockets) for live rooms / chats.
-* Stripe integration for paid plans (billing, webhooks, subscription status synced to users).
-* Observability (logging, metrics, health checks, readiness / liveness probes for Docker / Kubernetes).
+* Full authentication and refresh tokens
+* Public project pages
+* Build-in-public feed
+* Email notifications
+* Admin panel foundations
+* Observability (structured logs, metrics, probes)
 
 ---
 
 ## Contributing
 
-This project is currently developed by the SculptTech / Sparkly team. External contributions are welcome once the core architecture stabilises.
-
-If you want to propose a change:
-
-* open an issue with a short description and motivation,
-* or open a draft PR with your idea.
+The project is actively developed by the SculptTech / Sparkly team. External contributions will be welcomed once core systems stabilise.
 
 ---
 
@@ -212,4 +210,4 @@ If you want to propose a change:
 
 License: **TBD**
 
-Until a license is added, treat this repository as source‑available but not licensed for unrestricted commercial reuse.
+Until then, treat the repository as source‑available only.

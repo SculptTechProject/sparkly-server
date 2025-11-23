@@ -1,5 +1,6 @@
 using sparkly_server.Domain.Auth;
 using sparkly_server.Domain.Projects;
+using System.ComponentModel.DataAnnotations;
 
 namespace sparkly_server.Domain.Users
 {
@@ -7,8 +8,11 @@ namespace sparkly_server.Domain.Users
     {
         public Guid Id { get; private set; }
         public string Email { get; private set; } = default!;
+        [MaxLength(20)]
         public string UserName { get; set; } = default!;
+        [MaxLength(300)]
         public string PasswordHash { get; private set; } = default!;
+        [MaxLength(20)]
         public string Role { get; private set; } = "User";
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;

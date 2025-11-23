@@ -20,6 +20,11 @@ namespace sparkly_server.Services.Auth
             _audience = config["SPARKLY_JWT_AUDIENCE"] ?? "sparkly-api";
         }
 
+        /// <summary>
+        /// Generates a JWT access token for the given user.
+        /// </summary>
+        /// <param name="user">The user for whom the access token is being generated. The user object should contain details like Id, Email, UserName, and Role.</param>
+        /// <returns>A string representing the generated JWT access token.</returns>
         public string GenerateAccessToken(User user)
         {
             var claims = new List<Claim>
@@ -46,6 +51,10 @@ namespace sparkly_server.Services.Auth
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        /// <summary>
+        /// Generates a secure refresh token to be used for renewing access tokens.
+        /// </summary>
+        /// <returns>A string representing the generated refresh token.</returns>
         public string GenerateRefreshToken()
         {
             // na razie prosty generator; później można dodać zapisywanie do bazy

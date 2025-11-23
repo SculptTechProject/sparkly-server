@@ -19,8 +19,7 @@ if (string.IsNullOrWhiteSpace(jwtKey))
 {
     if (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Testing"))
     {
-        // Dev / Testing fallback key only for local usage
-        jwtKey = "dev-only-jwt-key-change-me";
+        jwtKey = "this-is-very-long-test-jwt-key-123456";
     }
     else
     {
@@ -55,7 +54,14 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 
 // Database
-if (!builder.Environment.IsEnvironment("Testing"))
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        options.UseInMemoryDatabase("sparkly-tests");
+    });
+}
+else
 {
     var connectionString = builder.Configuration.GetConnectionString("Default")
                            ?? Environment.GetEnvironmentVariable("ConnectionStrings__Default")
@@ -90,14 +96,33 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        var keyBytes = Encoding.UTF8.GetBytes(jwtKey);
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+
+            IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
             ValidateIssuerSigningKey = true,
             ClockSkew = TimeSpan.FromMinutes(1),
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine("[JWT] Authentication failed:");
+                Console.WriteLine(context.Exception.ToString());
+                return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                Console.WriteLine("[JWT] Challenge fired:");
+                Console.WriteLine($"Error: {context.Error}, Desc: {context.ErrorDescription}");
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -118,7 +143,10 @@ if (!app.Environment.IsEnvironment("Testing"))
     db.Database.Migrate();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -127,7 +155,6 @@ app.UseCors("FrontendDev");
 
 app.MapControllers();
 
-// Simple health endpoint for tests and monitoring
 app.MapGet("/healthz", () => Results.Ok(new { status = "ok" }));
 
 app.Run();

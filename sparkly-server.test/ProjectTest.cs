@@ -1,10 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using sparkly_server.DTO.Auth;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using sparkly_server.Domain.Users;
 using sparkly_server.DTO.Projects;
 using sparkly_server.Enum;
 using sparkly_server.Infrastructure;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
+using sparkly_server.Services.Auth;
+using Xunit.Abstractions;
 
 namespace sparkly_server.test
 {
@@ -12,32 +15,67 @@ namespace sparkly_server.test
     {
         private readonly HttpClient _client;
         private readonly TestWebApplicationFactory _factory;
+        private readonly ITestOutputHelper _output;
 
-        public ProjectTest(TestWebApplicationFactory factory)
+        public ProjectTest(TestWebApplicationFactory factory, ITestOutputHelper output)
         {
             _factory = factory;
             _client = factory.CreateClient();
+            _output = output;
         }
 
         public async Task InitializeAsync()
         {
             using var scope = _factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
+            
             db.Users.RemoveRange(db.Users);
             db.Projects.RemoveRange(db.Projects);
             await db.SaveChangesAsync();
         }
 
         public Task DisposeAsync() => Task.CompletedTask;
-        
+
         // Helpers
 
         /// <summary>
-        /// Creates a new project asynchronously with the specified project name and returns the created project's details.
+        /// Authenticates a test user by creating a new user in the database,
+        /// generating a JWT access token for the user, and assigning the token to the HTTP client.
+        /// Returns the unique identifier of the created test user.
         /// </summary>
-        /// <param name="projectName">The name of the project to be created.</param>
-        /// <returns>A task representing the asynchronous operation. The result contains the details of the created project, or null if deserialization fails.</returns>
+        /// <returns>A <see cref="Guid"/> representing the ID of the test user.</returns>
+        private async Task<Guid> AuthenticateAsTestUserAsync()
+        {
+            using var scope = _factory.Services.CreateScope();
+
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var jwtProvider = scope.ServiceProvider.GetRequiredService<IJwtProvider>();
+            
+            var user = new User(
+                userName: "testuser",
+                email: "test@sparkly.local"
+            );
+            
+            user.SetPasswordHash("TEST_HASH");
+
+            db.Users.Add(user);
+            await db.SaveChangesAsync();
+            
+            var token = jwtProvider.GenerateAccessToken(user);
+            
+            _client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+
+            return user.Id;
+        }
+
+        /// <summary>
+        /// Creates a new project with the specified name by sending a request to the server.
+        /// The project is created with a default description and public visibility.
+        /// Returns the details of the newly created project if the operation is successful.
+        /// </summary>
+        /// <param name="projectName">The name of the project to create.</param>
+        /// <returns>A <see cref="ProjectResponse"/> containing the details of the created project, or null if creation fails.</returns>
         private async Task<ProjectResponse?> CreateProjectAsync(string projectName)
         {
             var payload = new CreateProjectRequest(
@@ -47,54 +85,39 @@ namespace sparkly_server.test
             );
 
             var response = await _client.PostAsJsonAsync("/api/v1/projects/create", payload);
+
+            var rawBody = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"[CreateProjectAsync] Status: {(int)response.StatusCode} {response.StatusCode}");
+            _output.WriteLine($"[CreateProjectAsync] Body: {rawBody}");
+
             response.EnsureSuccessStatusCode();
 
             var created = await response.Content.ReadFromJsonAsync<ProjectResponse>();
             return created;
         }
 
-        /// <summary>
-        /// Registers a new user and logs them in, setting the authentication token in the HTTP client header for subsequent requests.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown when the authentication response does not contain an access token.</exception>
-        /// <returns>A task that represents the asynchronous operation of registering and logging in a user.</returns>
-        private async Task RegisterAndLoginUser()
-        {
-            var email = "test@sparkly.local";
-            var password = "Test1234!";
-            var userName = "testuser";
-
-            var registerPayload = new RegisterRequest(Username:userName, Email: email, Password: password);
-            var registerResponse = await _client.PostAsJsonAsync("/api/v1/auth/register", registerPayload);
-            registerResponse.EnsureSuccessStatusCode();
-
-            var loginPayload = new LoginRequest(Identifier: email, Password: password);
-            var loginResponse = await _client.PostAsJsonAsync("/api/v1/auth/login", loginPayload);
-            
-            loginResponse.EnsureSuccessStatusCode();
-
-            var loginContent = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
-
-            if (loginContent?.AccessToken is null)
-            {
-                throw new InvalidOperationException("Auth response did not contain access token");
-            }
-
-            _client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", loginContent.AccessToken);
-        }
-        
         // Tests
+
         [Fact]
         public async Task CreateProject_Should_Create_Project_For_Authenticated_User()
         {
-            await RegisterAndLoginUser();
+            var userId = await AuthenticateAsTestUserAsync();
             var projectName = "MyTestProject";
-
+            
             var created = await CreateProjectAsync(projectName);
-
+            
             Assert.NotNull(created);
-            Assert.Equal(projectName, created.ProjectName);
+            Assert.Equal(projectName, created!.ProjectName);
+            
+            using var scope = _factory.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var project = await db.Projects
+                .AsNoTracking()
+                .SingleAsync(p => p.Id == created.Id);
+
+            Assert.Equal(projectName, project.ProjectName);
+            Assert.Equal(userId, project.OwnerId);
         }
     }
 }

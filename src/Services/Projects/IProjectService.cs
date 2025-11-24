@@ -1,5 +1,6 @@
 ﻿using sparkly_server.Domain.Projects;
 using sparkly_server.DTO.Projects;
+using sparkly_server.DTO.Projects.Feed;
 using sparkly_server.Enum;
 
 namespace sparkly_server.Services.Projects
@@ -55,6 +56,10 @@ namespace sparkly_server.Services.Projects
         
         Task DeleteProjectAsync(
             Guid projectId, 
+            CancellationToken cancellationToken = default);
+
+        Task<ProjectFeedResult> GetFeedAsync(
+            ProjectFeedQuery query,
             CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,6 @@
 ﻿using sparkly_server.Domain.Projects;
+using sparkly_server.DTO.Projects;
+using sparkly_server.DTO.Projects.Feed;
 
 namespace sparkly_server.Services.Projects
 {
@@ -11,5 +13,6 @@ namespace sparkly_server.Services.Projects
         Task<IReadOnlyList<Project>> GetRandomPublicAsync(int take, CancellationToken ct = default);
         Task SaveChangesAsync(CancellationToken cancellationToken = default);
         Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<ProjectFeedData> GetQueryFeedAsync(ProjectFeedQuery query, Guid? currentUserId, CancellationToken cancellationToken = default);
     }
 }

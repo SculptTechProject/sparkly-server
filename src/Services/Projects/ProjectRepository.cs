@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using sparkly_server.Domain.Projects;
+using sparkly_server.DTO.Projects;
+using sparkly_server.DTO.Projects.Feed;
 using sparkly_server.Enum;
 using sparkly_server.Infrastructure;
 
@@ -35,7 +37,7 @@ namespace sparkly_server.Services.Projects
         public Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return _db.Projects
-                .Include(p => p.Members) // jak masz relacje
+                .Include(p => p.Members)
                 .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
         }
 
@@ -85,6 +87,64 @@ namespace sparkly_server.Services.Projects
             await _db.Projects
                 .Where(p => p.Id == id)
                 .ExecuteDeleteAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Retrieves a paginated feed of projects based on the specified query criteria and the current user's context asynchronously.
+        /// </summary>
+        /// <param name="query">The query object containing the filtering and pagination details.</param>
+        /// <param name="currentUserId">The unique identifier of the current user, if available, for personalized results.</param>
+        /// <param name="cancellationToken">A CancellationToken to observe while waiting for the task to complete.</param>
+        /// <returns>A Task representing the asynchronous operation, containing a ProjectFeedData instance with the query results.</returns>
+        public async Task<ProjectFeedData> GetQueryFeedAsync(ProjectFeedQuery query, Guid? currentUserId,
+                                                             CancellationToken cancellationToken = default)
+        {
+            var projects = _db.Projects.AsQueryable();
+
+            // Mine projects
+            if (query.Mine && currentUserId is not null)
+            {
+                projects = projects.Where(p => p.OwnerId == currentUserId);
+            }
+
+            // filter by ownerId
+            if (query.OwnerId is not null)
+            {
+                projects = projects.Where(p => p.OwnerId == query.OwnerId);
+            }
+
+            // filter by visibility
+            if (query.Visibility is not null)
+            {
+                projects = projects.Where(p => p.Visibility == query.Visibility);
+            }
+
+            // filter by search
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                var s = query.Search.Trim();
+                projects = projects.Where(p => EF.Functions.Like(p.ProjectName, $"%{s}%"));
+            }
+            
+            var totalCount = await projects.CountAsync(cancellationToken);
+            
+            var page = Math.Max(query.Page, 1);
+            var pageSize = Math.Min(query.PageSize, 100);
+            
+            var items = await projects
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Include(p => p.Members)
+                .ToListAsync(cancellationToken);
+
+            return new ProjectFeedData
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
         }
 
         /// <summary>

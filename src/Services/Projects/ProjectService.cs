@@ -1,5 +1,6 @@
 ﻿using sparkly_server.Domain.Projects;
 using sparkly_server.DTO.Projects;
+using sparkly_server.DTO.Projects.Feed;
 using sparkly_server.Enum;
 using sparkly_server.Services.Users;
 
@@ -353,5 +354,46 @@ namespace sparkly_server.Services.Projects
             
             await _projects.SaveChangesAsync(cancellationToken);
         }
+
+        /// <summary>
+        /// Retrieves a feed of projects based on the specified query and current user's context.
+        /// </summary>
+        /// <param name="query">The query parameters used to filter and paginate the project feed results.</param>
+        /// <param name="cancellationToken">A token to cancel the operation if needed.</param>
+        /// <returns>Returns a result containing a list of projects matching the query, as well as pagination details.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown if the current user's context cannot be resolved.
+        /// </exception>
+        public async Task<ProjectFeedResult> GetFeedAsync(ProjectFeedQuery query, CancellationToken cancellationToken = default)
+        {
+            var currentUserId = _currentUser.UserId;
+
+            var data = await _projects.GetQueryFeedAsync(query, currentUserId, cancellationToken);
+            
+            var items = data.Items.Select(p =>
+            {
+                var owner = p.Members.FirstOrDefault(m => m.Id == p.OwnerId);
+
+                return new ProjectFeedItem
+                {
+                    Id = p.Id,
+                    ProjectName = p.ProjectName,
+                    Description = p.Description,
+                    OwnerUserName = owner?.UserName ?? "Unknown",
+                    CreatedAt = p.CreatedAt,
+                    Visibility = p.Visibility
+                };
+            }).ToList();
+
+            return new ProjectFeedResult
+            {
+                Items = items,
+                Page = data.Page,
+                PageSize = data.PageSize,
+                TotalCount = data.TotalCount
+            };
+        }
+        
+        
     }
 }

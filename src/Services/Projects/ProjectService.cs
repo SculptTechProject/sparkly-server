@@ -63,12 +63,9 @@ namespace sparkly_server.Services.Projects
         /// <exception cref="InvalidOperationException">
         /// Thrown if the project with the specified identifier is not found.
         /// </exception>
-        public async Task<Project> GetProjectByIdAsync(Guid projectId, CancellationToken cancellationToken = default)
+        public Task<Project?> GetProjectByIdAsync(Guid projectId, CancellationToken cancellationToken = default)
         {
-            var project = await _projects.GetByIdAsync(projectId, cancellationToken)
-                          ?? throw new InvalidOperationException("Project not found");
-
-            return project;
+            return _projects.GetByIdAsync(projectId, cancellationToken);
         }
 
         /// <summary>

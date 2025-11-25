@@ -7,7 +7,10 @@ using sparkly_server.DTO.Projects;
 using sparkly_server.Enum;
 using sparkly_server.Infrastructure;
 using sparkly_server.Services.Auth;
+using sparkly_server.test.config;
+using System.Net;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace sparkly_server.test
 {
@@ -76,7 +79,7 @@ namespace sparkly_server.test
         /// </summary>
         /// <param name="projectName">The name of the project to create.</param>
         /// <returns>A <see cref="ProjectResponse"/> containing the details of the created project, or null if creation fails.</returns>
-        private async Task<ProjectResponse?> CreateProjectAsync(string projectName)
+        private async Task<ProjectResponse> CreateProjectAsync(string projectName)
         {
             var payload = new CreateProjectRequest(
                 ProjectName: projectName,
@@ -93,7 +96,9 @@ namespace sparkly_server.test
             response.EnsureSuccessStatusCode();
 
             var created = await response.Content.ReadFromJsonAsync<ProjectResponse>();
-            return created;
+            
+            return created ?? throw new XunitException("CreateProjectAsync: response body deserialized to null");
+
         }
 
         // Tests
@@ -107,7 +112,7 @@ namespace sparkly_server.test
             var created = await CreateProjectAsync(projectName);
             
             Assert.NotNull(created);
-            Assert.Equal(projectName, created!.ProjectName);
+            Assert.Equal(projectName, created.ProjectName);
             
             using var scope = _factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -118,6 +123,47 @@ namespace sparkly_server.test
 
             Assert.Equal(projectName, project.ProjectName);
             Assert.Equal(userId, project.OwnerId);
+        }
+
+        [Fact]
+        public async Task CreateProject_Should_Fail_For_Unauthenticated_User()
+        {
+            var request = new CreateProjectRequest("MyTestProject", "Test project", ProjectVisibility.Public);
+            
+            var response = await _client.PostAsJsonAsync("/api/v1/projects/create", request);
+            
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+        
+        [Fact]
+        public async Task GetProjectById_Should_Return_Null_For_Nonexistent_Project()
+        {
+            var response = await _client.GetAsync("/api/v1/projects/1234567890abcdef");
+            
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetProjectById_Should_Return_Project()
+        {
+            await AuthenticateAsTestUserAsync();
+            var projectName = "MyTestProject1";
+
+            var project = await CreateProjectAsync(projectName);
+            var projectId = project.Id;
+
+            _output.WriteLine($"[Test] Created projectId = {projectId}");
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var exists = await db.Projects.AnyAsync(p => p.Id == projectId);
+                _output.WriteLine($"[Test] Project exists in DB: {exists}");
+            }
+
+            var response = await _client.GetAsync($"/api/v1/projects/{projectId}");
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
     }
 }

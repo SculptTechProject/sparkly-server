@@ -27,7 +27,11 @@ namespace sparkly_server.Controllers.Projects
         public async Task<IActionResult> GetProjectById(Guid projectId, CancellationToken ct = default)
         {
             var project = await _projects.GetProjectByIdAsync(projectId, ct);
-            return Ok(project);
+
+            if (project is null)
+                return NotFound();
+
+            return Ok(new ProjectResponse(project));
         }
         
         // Create project

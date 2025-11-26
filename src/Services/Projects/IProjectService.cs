@@ -13,7 +13,7 @@ namespace sparkly_server.Services.Projects
             ProjectVisibility visibility,
             CancellationToken cancellationToken = default);
         
-        Task<Project> GetProjectByIdAsync(
+        Task<Project?> GetProjectByIdAsync(
             Guid projectId, CancellationToken 
                 cancellationToken = default);
 

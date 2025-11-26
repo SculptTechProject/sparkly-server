@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 
-namespace sparkly_server.test
+namespace sparkly_server.test.config
 {
     public class TestWebApplicationFactory : WebApplicationFactory<Program>
     {

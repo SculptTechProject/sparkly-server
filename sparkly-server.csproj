@@ -41,10 +41,12 @@
 
     <ItemGroup>
       <None Remove="Properties\launchSettings.json" />
+      <None Remove="sparkly-server.test\config\**" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Include=".github\workflows\ci.yml" />
+      <Content Remove="sparkly-server.test\config\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -52,6 +54,11 @@
       <Compile Remove="sparkly-server.test\UserTest.cs" />
       <Compile Remove="sparkly-server.test\ProjectTest.cs" />
       <Compile Remove="sparkly-server.test\TestWebAppliactionFactory.cs" />
+      <Compile Remove="sparkly-server.test\config\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="sparkly-server.test\config\**" />
     </ItemGroup>
 
 </Project>

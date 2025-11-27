@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using sparkly_server.DTO.Projects;
 using sparkly_server.DTO.Projects.Feed;
-using sparkly_server.Services.Projects;
+using sparkly_server.Services.Projects.service;
 
 namespace sparkly_server.Controllers.Projects
 {
@@ -13,7 +13,7 @@ namespace sparkly_server.Controllers.Projects
     {
         private readonly IProjectService _projects;
         
-        public ProjectsController(IProjectService projects) => _projects = projects;
+        private ProjectsController(IProjectService projects) => _projects = projects;
 
         /// <summary>
         /// Retrieves a specified number of random public projects.

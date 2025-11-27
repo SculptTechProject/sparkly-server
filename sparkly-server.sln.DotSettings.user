@@ -1,8 +1,8 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ADbFunctionsExtensions_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003Fc1c46ed28c61e1caa79185e4375a8ae7cd11cd5ba8853dcb37577f93f2ca8d5_003FDbFunctionsExtensions_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003APrincipalExtensions_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FSourcesCache_003Fcc1ad596b4fde937674ff6c832655e53b7c6cc97b1b7a38893ad352a788057_003FPrincipalExtensions_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=64599883_002D44d5_002D4d21_002D921f_002D1ab4ff07b455/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CreateProject_Should_Create_Project_For_Authenticated_User" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::E26AB9F3-8A34-4AB8-A503-F0B851823527::net9.0::sparkly_server.test.ProjectTest.CreateProject_Should_Create_Project_For_Authenticated_User&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=64599883_002D44d5_002D4d21_002D921f_002D1ab4ff07b455/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="CreateProject_Should_Create_Project_For_Authenticated_User" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::E26AB9F3-8A34-4AB8-A503-F0B851823527::net9.0::sparkly_server.test.ProjectTest.CreateProject_Should_Create_Project_For_Authenticated_User&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

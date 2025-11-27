@@ -1,6 +1,6 @@
 using sparkly_server.Domain.Users;
 
-namespace sparkly_server.Services.Auth
+namespace sparkly_server.Services.Auth.provider
 {
     public interface IJwtProvider
     {

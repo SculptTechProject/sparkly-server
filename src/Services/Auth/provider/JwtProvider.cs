@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace sparkly_server.Services.Auth
+namespace sparkly_server.Services.Auth.provider
 {
     public class JwtProvider : IJwtProvider
     {

@@ -5,7 +5,11 @@ using Scalar.AspNetCore;
 using sparkly_server.Enum;
 using sparkly_server.Infrastructure;
 using sparkly_server.Services.Auth;
+using sparkly_server.Services.Auth.provider;
+using sparkly_server.Services.Auth.service;
 using sparkly_server.Services.Projects;
+using sparkly_server.Services.Projects.repo;
+using sparkly_server.Services.Projects.service;
 using sparkly_server.Services.Users;
 using System.Text;
 

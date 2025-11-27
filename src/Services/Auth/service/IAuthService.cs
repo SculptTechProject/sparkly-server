@@ -1,4 +1,4 @@
-namespace sparkly_server.Services.Auth
+namespace sparkly_server.Services.Auth.service
 {
     public record AuthResult(
         string AccessToken,
@@ -10,7 +10,7 @@ namespace sparkly_server.Services.Auth
     public interface IAuthService
     {
         Task<AuthResult?> LoginAsync(string identifier, string password, CancellationToken ct = default);
-        Task<AuthResult> RefreshAsync(string refreshToken, CancellationToken ct = default);
+        Task<AuthResult?> RefreshAsync(string refreshToken, CancellationToken ct = default);
         Task LogoutAsync(string refreshToken, CancellationToken ct = default);
     }
 }

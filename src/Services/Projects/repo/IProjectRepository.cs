@@ -1,8 +1,7 @@
 ﻿using sparkly_server.Domain.Projects;
-using sparkly_server.DTO.Projects;
 using sparkly_server.DTO.Projects.Feed;
 
-namespace sparkly_server.Services.Projects
+namespace sparkly_server.Services.Projects.repo
 {
     public interface IProjectRepository
     {

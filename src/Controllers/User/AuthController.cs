@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using sparkly_server.DTO.Auth;
-using sparkly_server.Services.Auth;
+using sparkly_server.Services.Auth.service;
 using sparkly_server.Services.Users;
 
 namespace sparkly_server.Controllers.User
@@ -13,7 +13,7 @@ namespace sparkly_server.Controllers.User
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
 
-        public AuthController(IUserService userService, IAuthService authService)
+        private AuthController(IUserService userService, IAuthService authService)
         {
             _userService = userService;
             _authService = authService;

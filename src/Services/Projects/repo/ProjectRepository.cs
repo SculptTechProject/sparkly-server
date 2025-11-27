@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using sparkly_server.Domain.Projects;
-using sparkly_server.DTO.Projects;
 using sparkly_server.DTO.Projects.Feed;
 using sparkly_server.Enum;
 using sparkly_server.Infrastructure;
 
-namespace sparkly_server.Services.Projects
+namespace sparkly_server.Services.Projects.repo
 {
     public class ProjectRepository : IProjectRepository
     {

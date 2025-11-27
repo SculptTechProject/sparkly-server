@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sparkly_server.Infrastructure;
 using sparkly_server.Services.Users;
 
 namespace sparkly_server.Controllers.User
@@ -11,12 +10,10 @@ namespace sparkly_server.Controllers.User
     public class ProfileController : ControllerBase
     {
         private readonly ICurrentUser _currentUser;
-        private readonly AppDbContext _db;
 
-        public ProfileController(ICurrentUser currentUser, AppDbContext db)
+        private ProfileController(ICurrentUser currentUser)
         {
             _currentUser = currentUser;
-            _db = db;
         }
 
         [HttpGet("me")]

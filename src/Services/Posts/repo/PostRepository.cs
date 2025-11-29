@@ -76,7 +76,7 @@ namespace sparkly_server.Services.Posts.repo
         public async Task<IReadOnlyList<Post>> GetUserFeedPostsAsync(Guid userId, int page, int pageSize, CancellationToken ct = default)
         {
             return await _db.Posts
-                .Where(p => p.AuthorId == userId) // na start prosta wersja feedu
+                .Where(p => p.AuthorId == userId)
                 .OrderByDescending(p => p.CreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -106,6 +106,18 @@ namespace sparkly_server.Services.Posts.repo
             await _db.Posts
                 .Where(p => p.Id == id)
                 .ExecuteDeleteAsync(ct);
+        }
+
+        /// <summary>
+        /// Updates an existing post asynchronously.
+        /// </summary>
+        /// <param name="post">The post entity with updated properties.</param>
+        /// <param name="ct">A cancellation token to observe while waiting for the task to complete.</param>
+        /// <returns>The updated post entity.</returns>
+        public async Task<Post> UpdatePostAsync(Post post, CancellationToken ct = default)
+        {
+            await _db.SaveChangesAsync(ct);
+            return post;
         }
     }
 }

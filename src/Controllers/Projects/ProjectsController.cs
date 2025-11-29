@@ -13,7 +13,7 @@ namespace sparkly_server.Controllers.Projects
     {
         private readonly IProjectService _projects;
         
-        private ProjectsController(IProjectService projects) => _projects = projects;
+        public ProjectsController(IProjectService projects) => _projects = projects;
 
         /// <summary>
         /// Retrieves a specified number of random public projects.

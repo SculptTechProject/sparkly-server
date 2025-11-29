@@ -1,4 +1,4 @@
-namespace sparkly_server.Services.Users
+namespace sparkly_server.Services.Users.CurrentUser
 {
     public interface ICurrentUser
     {

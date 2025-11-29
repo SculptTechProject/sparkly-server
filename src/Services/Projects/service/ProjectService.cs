@@ -4,6 +4,8 @@ using sparkly_server.DTO.Projects.Feed;
 using sparkly_server.Enum;
 using sparkly_server.Services.Projects.repo;
 using sparkly_server.Services.Users;
+using sparkly_server.Services.Users.CurrentUser;
+using sparkly_server.Services.Users.repo;
 
 namespace sparkly_server.Services.Projects.service
 {

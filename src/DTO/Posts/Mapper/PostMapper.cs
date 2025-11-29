@@ -5,12 +5,15 @@ namespace sparkly_server.DTO.Posts.Mapper
     public static class PostMapper
     {
         /// <summary>
-        /// Maps a <see cref="Post"/> domain object to a <see cref="PostResponse"/> DTO.
+        /// Converts a Post domain object into a PostResponse DTO object.
         /// </summary>
-        /// <param name="post">The <see cref="Post"/> instance to be mapped.</param>
-        /// <returns>A <see cref="PostResponse"/> representing the mapped data.</returns>
-        public static PostResponse ToResponse(this Post post)
+        /// <param name="post">The Post domain object to convert.</param>
+        /// <param name="currentUserId">The unique identifier of the current user to determine ownership.</param>
+        /// <returns>A PostResponse object containing the mapped data and ownership-related properties.</returns>
+        public static PostResponse ToResponse(this Post post, Guid currentUserId)
         {
+            var isOwner = post.AuthorId == currentUserId;
+
             return new PostResponse
             {
                 Id = post.Id,
@@ -19,7 +22,9 @@ namespace sparkly_server.DTO.Posts.Mapper
                 Title = post.Title,
                 Content = post.Content,
                 CreatedAt = post.CreatedAt,
-                UpdatedAt = post.UpdatedAt
+                UpdatedAt = post.UpdatedAt,
+                CanEdit = isOwner,
+                CanDelete = isOwner
             };
         }
     }

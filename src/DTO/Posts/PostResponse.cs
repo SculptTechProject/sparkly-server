@@ -9,5 +9,7 @@ namespace sparkly_server.DTO.Posts
         public string Content { get; set; } = "";
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public bool CanEdit { get; set; }
+        public bool CanDelete { get; set; }
     }
 }

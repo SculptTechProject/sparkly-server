@@ -3,6 +3,7 @@ using sparkly_server.Domain.Auth;
 using sparkly_server.Infrastructure;
 using sparkly_server.Services.Auth.provider;
 using sparkly_server.Services.Users;
+using sparkly_server.Services.Users.service;
 
 namespace sparkly_server.Services.Auth.service
 {

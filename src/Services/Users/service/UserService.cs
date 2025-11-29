@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using sparkly_server.Domain.Users;
+using sparkly_server.Services.Users.repo;
 
-namespace sparkly_server.Services.Users
+namespace sparkly_server.Services.Users.service
 {
     public class UserService : IUserService
     {

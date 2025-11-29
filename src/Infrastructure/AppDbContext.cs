@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using sparkly_server.Domain.Auth;
+using sparkly_server.Domain.Posts;
 using sparkly_server.Domain.Projects;
 using sparkly_server.Domain.Users;
 using sparkly_server.Enum;
@@ -10,6 +11,7 @@ namespace sparkly_server.Infrastructure
     {
         public DbSet<User> Users => Set<User>();
         public DbSet<Project> Projects => Set<Project>();
+        public DbSet<Post> Posts => Set<Post>();
         public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
@@ -107,6 +109,43 @@ namespace sparkly_server.Infrastructure
                         });
                 }
             );
+            
+            // Posts
+            modelBuilder.Entity<Post>(cfg =>
+            {
+                cfg.ToTable("posts");
+
+                cfg.HasKey(p => p.Id);
+
+                cfg.Property(p => p.Title)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                cfg.Property(p => p.Content)
+                    .IsRequired()
+                    .HasMaxLength(4000);
+
+                cfg.Property(p => p.CreatedAt)
+                    .IsRequired();
+
+                cfg.Property(p => p.UpdatedAt)
+                    .IsRequired();
+
+                cfg.Property(p => p.AuthorId)
+                    .IsRequired();
+
+                // relation: Post -> Author (User)
+                cfg.HasOne(p => p.Author)
+                    .WithMany(u => u.Posts)
+                    .HasForeignKey(p => p.AuthorId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // relation: Post -> Project (optional)
+                cfg.HasOne(p => p.Project)
+                    .WithMany(pr => pr.Posts)
+                    .HasForeignKey(p => p.ProjectId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
         }
     }
 }

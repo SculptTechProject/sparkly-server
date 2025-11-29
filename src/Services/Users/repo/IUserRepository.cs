@@ -1,6 +1,6 @@
 using sparkly_server.Domain.Users;
 
-namespace sparkly_server.Services.Users
+namespace sparkly_server.Services.Users.repo
 {
     public interface IUserRepository
     {

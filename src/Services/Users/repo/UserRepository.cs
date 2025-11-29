@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using sparkly_server.Domain.Users;
 using sparkly_server.Infrastructure;
 
-namespace sparkly_server.Services.Users
+namespace sparkly_server.Services.Users.repo
 {
     public class UserRepository : IUserRepository
     {

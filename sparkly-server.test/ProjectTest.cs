@@ -7,6 +7,7 @@ using sparkly_server.DTO.Projects;
 using sparkly_server.Enum;
 using sparkly_server.Infrastructure;
 using sparkly_server.Services.Auth;
+using sparkly_server.Services.Auth.provider;
 using sparkly_server.test.config;
 using System.Net;
 using Xunit.Abstractions;

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sparkly_server.Infrastructure;
 using sparkly_server.Services.Users;
+using sparkly_server.Services.Users.CurrentUser;
 
 namespace sparkly_server.Controllers.User
 {
@@ -11,14 +11,19 @@ namespace sparkly_server.Controllers.User
     public class ProfileController : ControllerBase
     {
         private readonly ICurrentUser _currentUser;
-        private readonly AppDbContext _db;
 
-        public ProfileController(ICurrentUser currentUser, AppDbContext db)
+        public ProfileController(ICurrentUser currentUser)
         {
             _currentUser = currentUser;
-            _db = db;
         }
 
+        /// <summary>
+        /// Retrieves the current authenticated user's profile details such as UserId, Email, UserName, and Role.
+        /// </summary>
+        /// <returns>
+        /// An HTTP 200 OK response containing the user's profile information if the user is authenticated.
+        /// An HTTP 401 Unauthorized response if the user is not authenticated.
+        /// </returns>
         [HttpGet("me")]
         public IActionResult Me()
         {

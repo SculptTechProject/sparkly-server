@@ -1,4 +1,5 @@
 using sparkly_server.Domain.Auth;
+using sparkly_server.Domain.Posts;
 using sparkly_server.Domain.Projects;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,6 +18,7 @@ namespace sparkly_server.Domain.Users
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
         public ICollection<Project> Projects { get; private set; } = new List<Project>();
+        public ICollection<Post> Posts { get; private set; } = new List<Post>();
 
         private User() { }
 

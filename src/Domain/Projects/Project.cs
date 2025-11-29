@@ -1,4 +1,5 @@
-﻿using sparkly_server.Domain.Users;
+﻿using sparkly_server.Domain.Posts;
+using sparkly_server.Domain.Users;
 using sparkly_server.Enum;
 
 namespace sparkly_server.Domain.Projects
@@ -17,6 +18,7 @@ namespace sparkly_server.Domain.Projects
         public ProjectVisibility Visibility { get; private set; }
         private readonly List<User> _members = new();
         public IReadOnlyCollection<User> Members => _members.AsReadOnly();
+        public ICollection<Post> Posts { get; private set; } = new List<Post>();
         
         private Project() { }
 

@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using sparkly_server.Domain.Auth;
 using sparkly_server.Infrastructure;
+using sparkly_server.Services.Auth.provider;
 using sparkly_server.Services.Users;
+using sparkly_server.Services.Users.service;
 
-namespace sparkly_server.Services.Auth
+namespace sparkly_server.Services.Auth.service
 {
     public class AuthService : IAuthService
     {
@@ -64,11 +66,11 @@ namespace sparkly_server.Services.Auth
         /// <param name="refreshToken">The existing refresh token issued to the user for renewing authentication.</param>
         /// <param name="ct">A cancellation token to observe while performing the refresh operation.</param>
         /// <returns>An AuthResult object containing the new access token, the provided refresh token, and their respective expiry times. Returns null if the refresh token is invalid or inactive.</returns>
-        public async Task<AuthResult> RefreshAsync(string refreshToken, CancellationToken ct = default)
+        public async Task<AuthResult?> RefreshAsync(string refreshToken, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(refreshToken))
             {
-                return null!;
+                return null;
             }
 
             var entity = await _db.RefreshTokens
@@ -77,7 +79,7 @@ namespace sparkly_server.Services.Auth
 
             if (entity is null || !entity.IsActive)
             {
-                return null!;
+                return null;
             }
 
             var user = entity.User;

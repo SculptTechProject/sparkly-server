@@ -5,8 +5,17 @@ using Scalar.AspNetCore;
 using sparkly_server.Enum;
 using sparkly_server.Infrastructure;
 using sparkly_server.Services.Auth;
+using sparkly_server.Services.Auth.provider;
+using sparkly_server.Services.Auth.service;
+using sparkly_server.Services.Posts.repo;
+using sparkly_server.Services.Posts.service;
 using sparkly_server.Services.Projects;
+using sparkly_server.Services.Projects.repo;
+using sparkly_server.Services.Projects.service;
 using sparkly_server.Services.Users;
+using sparkly_server.Services.Users.CurrentUser;
+using sparkly_server.Services.Users.repo;
+using sparkly_server.Services.Users.service;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,11 +56,17 @@ builder.Services.AddAuthorization(options =>
 // Domain / app services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IPostService, PostService>();
 
 // Database
 if (builder.Environment.IsEnvironment("Testing"))

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using sparkly_server.Services.Users;
 using sparkly_server.Services.Users.CurrentUser;
 
 namespace sparkly_server.Controllers.User
